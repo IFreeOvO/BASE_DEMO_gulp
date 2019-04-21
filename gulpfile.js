@@ -1,27 +1,16 @@
-const Vinyl = require('vinyl');
+const { src, dest, task} = require('gulp')
+const del = require('delete')
 
-const file = new Vinyl({
-  cwd: '/',
-  base: '/test/',
-  path: '/test/file.js',
-  contents: new Buffer.from('var x = 123')
-});
+const path = 'output/pages/'
 
-console.log(file)
+function copyTemplate() {
+  return src('template/*')
+          .pipe(dest(`${path}/`))
+}
 
-file.relative === 'file.js';
+function clean(cb) {
+  return del([`${path}/`], cb)
+}
 
-file.dirname === '/test';
-file.dirname = '/specs';
-file.path === '/specs/file.js';
-
-file.basename === 'file.js';
-file.basename = 'file.txt';
-file.path === '/specs/file.txt';
-
-file.stem === 'file';
-file.stem = 'foo';
-file.path === '/specs/foo.txt';
-file.extname === '.txt';
-file.extname = '.js';
-file.path === '/specs/file.js';
+task('default', copyTemplate)
+task('clean', clean)
